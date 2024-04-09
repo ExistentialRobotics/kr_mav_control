@@ -154,15 +154,17 @@ void SO3ControlNodelet::odom_callback(const nav_msgs::Odometry::ConstPtr &odom)
   frame_id_ = odom->header.frame_id;
 
   const Eigen::Vector3f position(odom->pose.pose.position.x, odom->pose.pose.position.y, odom->pose.pose.position.z);
-  const Eigen::Vector3f velocity(odom->twist.twist.linear.x, odom->twist.twist.linear.y, odom->twist.twist.linear.z);
+  const Eigen::Vector3f body_velocity(odom->twist.twist.linear.x, odom->twist.twist.linear.y, odom->twist.twist.linear.z);
 
   current_yaw_ = tf::getYaw(odom->pose.pose.orientation);
-
   current_orientation_ = Eigen::Quaternionf(odom->pose.pose.orientation.w, odom->pose.pose.orientation.x,
                                             odom->pose.pose.orientation.y, odom->pose.pose.orientation.z);
-
+  
+  //We expect the velocity from odom to be in body frame, and the controller uses world velocity, so rotate the linear velocity into the proper frame.
+  const Eigen::Vector3f world_velocity = current_orientation_ * body_velocity;
+  
   controller_.setPosition(position);
-  controller_.setVelocity(velocity);
+  controller_.setVelocity(world_velocity);
   controller_.setCurrentOrientation(current_orientation_);
 
   if(position_cmd_init_)
