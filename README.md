@@ -1,6 +1,8 @@
-kr_mav_control
+kr_mav_control - ERL Fork
 =================
-
+### Notable differences
+Essentially Identical to kr_mav_control from KumarRobotics, but we have changed the linear velocity frame from odom for the SO3 controller to match our environment.
+=================
 ROS packages for quadrotor control
 
 [![Build Status](https://github.com/KumarRobotics/kr_mav_control/workflows/build-and-test/badge.svg)](https://github.com/KumarRobotics/kr_mav_control/actions?query=workflow%3Abuild)
